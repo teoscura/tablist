@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="tabList:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/tabList_jar</output-path>
+    <root id="archive" name="tabList.jar">
+      <element id="module-output" name="tabList" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Test/bukkit173.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,10 @@
+name: TabList
+main: me.teoscura.tabList
+version: 1.0
+commands:
+  tab:
+    description: Lists online players
+    usage: /tab
+  lastonline:
+    description: Lists offline players
+    usage: /lastonline
