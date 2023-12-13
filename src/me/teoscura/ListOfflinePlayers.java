@@ -28,9 +28,9 @@ public class ListOfflinePlayers implements CommandExecutor {
         Player player = (Player) commandSender;
         Player[] onplayers = getOnlinePlayers();
         boolean found = false;
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+
         OfflinePlayer[] ofplayers = getWhitelistedPlayers().toArray(new OfflinePlayer[0]);
-        long time;
+
         player.sendMessage(ChatColor.GOLD+"Players offline: "+ChatColor.YELLOW+(ofplayers.length-onplayers.length)+"/"+ofplayers.length);
         for(OfflinePlayer of: ofplayers) {
             for(Player p : onplayers){
@@ -39,24 +39,41 @@ public class ListOfflinePlayers implements CommandExecutor {
                 }
             }
             if(!found){
-                if(plugin.lastOnline.containsKey(of.getName().toLowerCase())) {
-                    try {
-                        Date date = new Date();
-                        time = Math.abs(date.getTime() - (sdf.parse(plugin.lastOnline.get(of.getName())).getTime()));
-                        long d = TimeUnit.DAYS.convert(time, TimeUnit.MILLISECONDS);
-                        long h = TimeUnit.HOURS.convert(time, TimeUnit.MILLISECONDS) - d*24;
-                        long m = TimeUnit.MINUTES.convert(time, TimeUnit.MILLISECONDS) - h*60 - d*24*60;
-                        player.sendMessage(ChatColor.GRAY + "() " + of.getName() + " - " + d + " d " + h + " h " + m + "m ago");
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                else {
-                    player.sendMessage(ChatColor.GRAY + "() " + of.getName() + " - null, no record of logout");
+                try {
+                    player.sendMessage(ChatColor.GRAY + "() " + of.getName() + " - " + getTimeDifference(of.getName()));
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
                 }
             }
             found = false;
         }
         return true;
+    }
+
+    public String getTimeDifference(String playerName) throws ParseException {
+        String string;
+        if (plugin.lastOnline.containsKey(playerName)) {
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            long time = Math.abs(date.getTime() - (sdf.parse(plugin.lastOnline.get(playerName)).getTime()));
+            long d = TimeUnit.DAYS.convert(time, TimeUnit.MILLISECONDS);
+            long h = TimeUnit.HOURS.convert(time, TimeUnit.MILLISECONDS) - d * 24;
+            long m = TimeUnit.MINUTES.convert(time, TimeUnit.MILLISECONDS) - h * 60 - d * 24 * 60;
+            if(d!=0){
+                string = d+"d "+h+"h "+m+"m ago.";
+            }
+            else{
+                if(h!=0){
+                    string = h+"h "+m+"m ago.";
+                }
+                else{
+                    string = m+"m ago.";
+                }
+            }
+            return string;
+        }
+        else{
+            return "null, no record of logout";
+        }
     }
 }
